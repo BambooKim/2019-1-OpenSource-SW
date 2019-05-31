@@ -1,21 +1,26 @@
-
 var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
+require("dotenv").config({path : 'config.env'});
+
 //papago api
 var request = require('request');
+
 //번역 api_url
-var translate_api_url = 'https://openapi.naver.com/v1/papago/n2mt';
+var translate_api_url = process.env.translate_api_url;
+
 //언어감지 api_url
-var languagedetect_api_url = 'https://openapi.naver.com/v1/papago/detectLangs'
+var languagedetect_api_url = process.env.languagedetect_api_url
+
 // Naver Auth Key
-//새로 발급받은 naver papago api id, pw 입력
-// 보안을 위해 추후 파일 분리 예정
-var client_id = 'xZMx34y7uru1v8lywZ2d';
-var client_secret = 'p6L7M7WsH9';
+// 새로 발급받은 naver papago api id, pw 입력
+// 보안을 위해 .env 파일에 분리.
+var client_id = process.env.client_id;
+var client_secret = process.env.client_secret;
+
 const config = {
-  channelAccessToken: '0ZFPZnqqAGfLuPjFNSaUGmzWhe7BW0s4A44sNXNIXuwsUoFLMedIFNAReTm5LIfVjLCw7C57DhRiVu2bfAWmMh+DoQRwTp5gZvK5UPY9JrqtADnuS8rSIaRPi4GF9VBzVzBGrmwbuVo+OigeAq84agdB04t89/1O/w1cDnyilFU=',
-  channelSecret: '7595d6e379945823812a8e5f32542a34',
+  channelAccessToken: process.env.channelAccessToken,
+  channelSecret: process.env.channelSecret,
 };
 
 // create LINE SDK client
