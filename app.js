@@ -14,6 +14,7 @@ var languagedetect_api_url = 'https://openapi.naver.com/v1/papago/detectLangs'
 
 // Naver Auth Key
 //새로 발급받은 naver papago api id, pw 입력
+// 보안을 위해 추후 파일 분리 예정
 var client_id = 'xZMx34y7uru1v8lywZ2d';
 var client_secret = 'p6L7M7WsH9';
 
@@ -123,9 +124,9 @@ function handleEvent(event) {
               }
           });
         }
-        // 메시지의 언어가 영어 또는 한국어가 아닐 경우
+        // 메시지의 언어를 파파고에서 지원하지 않는 경우.
         else{
-          result.text = '언어를 감지할 수 없습니다. \n 번역 언어는 한글 또는 영어만 가능합니다.';
+          result.text = '언어를 감지할 수 없습니다. \n 지원되지 않는 언어입니다.';
           client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
         }
 
@@ -136,6 +137,6 @@ function handleEvent(event) {
     });
   }
 
-app.listen(3000, function () {
-  console.log('Linebot listening on port 3000!');
+app.listen(80, function () {
+  console.log('Linebot listening on port 80!');
 });
