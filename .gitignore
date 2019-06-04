@@ -1,3 +1,6 @@
 node_modules
 config.env
 app.js
+*.m4a
+*.wav
+*.mp3

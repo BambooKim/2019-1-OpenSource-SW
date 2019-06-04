@@ -102,8 +102,7 @@ function handleEvent(event) {
                   var objBody = JSON.parse(response.body);
                   
                   // Message 잘 찍히는지 확인
-                  //result.text = objBody.message.result.translatedText;
-                  result.audio = 
+                  result.text = objBody.message.result.translatedText;
                   console.log(result.text);
                   
                   //번역된 문장 보내기
