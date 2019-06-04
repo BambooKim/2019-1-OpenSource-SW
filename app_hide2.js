@@ -119,7 +119,7 @@ function handleEvent(event) {
 
           // 한국어 입력 시 영어로 번역.
           else if (detect_body.langCode == 'ko') { 
-            result.text='1.영어\n2.일본어\n3.중국어';
+            result.text='번역할 언어를 선택해 주세요.\n1. 영어\n2. 일본어\n3. 중국어';
             line_client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
             check = 1;
             buf = event.message.text;
@@ -140,7 +140,9 @@ function handleEvent(event) {
                   target = 'ja';
                   break;
                 case '3':
-                  target = 'zh-cn';
+                  target = 'zh-CN';
+                  break;
+                default:
                   break;
               }
               //papago 번역 option
