@@ -11,8 +11,8 @@ const line = require('@line/bot-sdk');
 // papago api
 var request = require('request');
 // google speech-to-text api
-//const Speech = require('@google-cloud/speech');
-//const speech = new Speech.speechClient();
+// const Speech = require('@google-cloud/speech');
+// const speech = new Speech.speechClient();
 // 번역 api_url
 var translate_api_url = process.env.translate_api_url;
 // 언어감지 api_url
@@ -67,6 +67,7 @@ function handleEvent(event) {
     console.log("Message Type : ", event.message.type);
     console.log("Message Text : ", event.message.text);
     return new Promise(function(resolve, reject) {
+      
       //언어 감지 option
       var detect_options = {
         url : languagedetect_api_url,
@@ -87,15 +88,17 @@ function handleEvent(event) {
           console.log("Detected Language : ", detect_body.langCode);
   
           // 영어, 일본어, 중국어 입력 시 한국어로 번역.
-          if(detect_body.langCode == "en" || detect_body.langCode == "ja" || detect_body.langCode == "zh-cn") {
+          if(detect_body.langCode == "en" || detect_body.langCode == "ja" 
+          || detect_body.langCode == "zh-CN" || detect_body.langCode == "zh-TW"
+          || detect_body.langCode == "vi" || detect_body.langCode == "id"
+          || detect_body.langCode == "th" || detect_body.langCode == "de" || detect_body.langCode == "ru"
+          || detect_body.langCode == "es" || detect_body.langCode == "it" || detect_body.langCode == "fr") {
             source = detect_body.langCode;
             target = 'ko';
   
             //papago 번역 option
             var options = {
               url:  translate_api_url,
-              
-              // 한국어(source : ko), 영어(target: en), 카톡에서 받는 메시지(text)
               form: {'source':source, 'target':target, 'text':event.message.text},
               headers: {'X-Naver-Client-Id': papago_client_id, 'X-Naver-Client-Secret': papago_client_secret}
             };
@@ -111,21 +114,21 @@ function handleEvent(event) {
                   result.text = objBody.message.result.translatedText;
                   console.log(result.text);
                   
-                  //번역된 문장 보내기
+                  // 번역된 문장 보내기
                   line_client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
               }
             });
           }
 
-          // 한국어 입력 시 영어로 번역.
+          // 한국어 입력 시 언어 선택 후 선택한 언어로 번역.
           else if (detect_body.langCode == 'ko') { 
-            result.text='번역할 언어를 선택해 주세요.\n1. 영어\n2. 일본어\n3. 중국어';
+            result.text='번역할 언어를 선택해 주세요.\n1. 영어\t2. 일본어\n3. 중문 간체\t4. 중문 번체\n5. 베트남어\t6.인도네시아\n7. 태국어\t8. 독일어\n9. 러시아어\t10. 스페인어\n11. 이탈리아\t12. 프랑스어';
             line_client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
             check = 1;
             buf = event.message.text;
           }
   
-          // 메시지의 언어를 파파고에서 지원하지 않는 경우.
+          // target 결정.
           else {
             if(check == 1)
             {
@@ -142,14 +145,40 @@ function handleEvent(event) {
                 case '3':
                   target = 'zh-CN';
                   break;
+                case '4':
+                  target = 'zh-TW';
+                  break;
+                case '5':
+                  target = 'vi';
+                  break;
+                case '6':
+                  target = 'id';
+                  break;
+                case '7':
+                  target = 'th';
+                  break;
+                case '8':
+                  target = 'de';
+                  break;
+                case '9':
+                  target = 'ru';
+                  break;  
+                case '10':
+                  target = 'es';
+                  break;
+                case '11':
+                  target = 'it';
+                  break;
+                case '12':
+                  target = 'fr';
+                  break;
                 default:
                   break;
               }
+
               //papago 번역 option
               var options = {
               url:  translate_api_url,
-              
-              // 한국어(source : ko), 영어(target: en), 카톡에서 받는 메시지(text)
               form: {'source':source, 'target':target, 'text':buf},
               headers: {'X-Naver-Client-Id': papago_client_id, 'X-Naver-Client-Secret': papago_client_secret}
               };
@@ -173,7 +202,7 @@ function handleEvent(event) {
             }
             else 
             {
-              result.text = '언어를 감지할 수 없습니다. \n 지원되지 않는 언어입니다.';
+              result.text = '언어를 감지할 수 없습니다. \n 지원하지 않는 언어입니다.';
               line_client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
             }
           }
